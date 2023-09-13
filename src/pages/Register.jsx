@@ -1,19 +1,21 @@
 import { Link, useNavigate } from "react-router-dom";
 import InputArea from "../components/InputArea";
-import { saveToLocale, validate } from "../utils/helpers";
+import { validate } from "../utils/helpers";
 import { toast } from "react-toastify";
 import { v4 } from "uuid";
-import { useState } from "react";
-import axios from "axios";
-
-axios.defaults.baseURL = "http://localhost:3060";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 
 const Register = () => {
-  const [img, setImg] = useState();
+  const { uploadUser } = useContext(UserContext);
   const navigate = useNavigate();
 
+  if (localStorage.getItem("token")) {
+    navigate("/home");
+  }
+
   // form gönderilme olayı
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // form verisi oluşturma
@@ -23,7 +25,7 @@ const Register = () => {
     const formData = Object.fromEntries(form.entries());
 
     // resmi stringe çevir
-    const strImage = imageToString(formData.image);
+    const strImage = await imageToString(formData.image);
 
     console.log(strImage);
 
@@ -46,34 +48,24 @@ const Register = () => {
   const imageToString = async (file) => {
     // dosya tipini doğrulama
     if (file.type === "image/jpeg" || file.type === "image/png") {
-      const reader = new FileReader();
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
 
-      reader.readAsDataURL(file);
+        reader.readAsDataURL(file);
 
-      reader.onload = () => {
-        setImg(reader.result);
-      };
+        reader.onload = () => {
+          resolve(reader.result);
+        };
 
-      return img;
+        reader.onerror = () => {
+          toast("Resmi yükleme hata oluştu :(");
+          reject(null);
+        };
+      });
     } else {
       toast("Lütfen geçerli bir dosya tipi giriniz: jpeg / png");
       return null;
     }
-  };
-
-  // kulalnıyı veritabına ekler
-  const uploadUser = (user) => {
-    axios
-      .post("/users", user)
-      .then(() => {
-        // kullanıcının id'sini local'storege'a ekle
-        saveToLocale("token", user.id);
-        // anasayfaya yönlendir
-        navigate("/home");
-        // bildirim verme
-        toast.success("Hesabınız oluşturuldu", { autoClose: 3000 });
-      })
-      .catch((err) => console.log(err));
   };
 
   return (

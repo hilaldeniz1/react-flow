@@ -1,10 +1,31 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import InputArea from "../components/InputArea";
+import { validate } from "../utils/helpers";
+import { toast } from "react-toastify";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 
 const Login = () => {
+  const { loginToAccount } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  if (localStorage.getItem("token")) {
+    navigate("/home");
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const email = e.target[0].value;
+    const password = e.target[1].value;
+
+    if (validate({ email, password })) {
+      loginToAccount(email, password);
+    } else {
+      toast.info("Lütfen formu doldurun");
+    }
   };
+
   return (
     <section className="bg-gray-900">
       <div className="h-screen flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
@@ -20,7 +41,7 @@ const Login = () => {
             <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
               <InputArea
                 label={"Emailiniz"}
-                holder={"deneme@şirket.com "}
+                holder={"deneme@şirket.com"}
                 name={"email"}
                 type={"email"}
               />

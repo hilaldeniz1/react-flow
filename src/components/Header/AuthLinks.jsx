@@ -4,8 +4,8 @@ const AuthLinks = () => {
   return (
     <>
       <Link
-        className="px-4 py-2 lg:px-5 lg:py-2.5 mr-2 font-medium rounded-lg hover:bg-gray-700"
         to={"/login"}
+        className="px-4 py-2 lg:px-5 lg:py-2.5 mr-2 font-medium rounded-lg hover:bg-gray-700"
       >
         Giriş Yap
       </Link>

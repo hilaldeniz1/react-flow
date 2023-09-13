@@ -2,10 +2,12 @@ import { Link, NavLink } from "react-router-dom";
 import AuthLinks from "./AuthLinks";
 import ProfileInfo from "./ProfileInfo";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { UserContext } from "./../../context/UserContext";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { activeUser, logoutFromAccount } = useContext(UserContext);
 
   return (
     <header>
@@ -22,7 +24,17 @@ const Header = () => {
            */}
 
           <div className="flex items-center lg:order-2">
-            {true ? <AuthLinks /> : <ProfileInfo />}
+            {activeUser === null ? (
+              <AuthLinks />
+            ) : (
+              activeUser && (
+                <ProfileInfo
+                  activeUser={activeUser}
+                  logoutFromAccount={logoutFromAccount}
+                />
+              )
+            )}
+
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="inline-flex text-[24px] items-center p-2 ml-1 rounded lg:hidden transition hover:bg-gray-300 hover:text-gray-400"

@@ -6,14 +6,14 @@ import Header from "./components/Header";
 
 function App() {
   return (
-    <BrowserRouter>
+    <>
       <Header />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/home" element={<MainPage />} />
       </Routes>
-    </BrowserRouter>
+    </>
   );
 }
 

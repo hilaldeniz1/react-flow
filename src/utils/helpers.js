@@ -8,7 +8,7 @@ export const validate = (data) => {
   return isValid;
 };
 
-// elemanı local stroge'a ekler
+// elemanı lokal stroge'a ekler
 export const saveToLocale = (key, value) => {
   // stringe çevirme
   const str = JSON.stringify(value);
